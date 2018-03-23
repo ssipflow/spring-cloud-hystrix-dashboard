@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashboard
+spec:
+  rules:
+  - host: dashboard.k8s.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: dashboard
+          servicePort: 9999
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dashboard
+spec:
+  type: ClusterIP
+  selector:
+    app: spring-cloud-hystrix-dashboard
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spring-cloud-hystrix-dashboard
+  labels:
+    app: spring-cloud-hystrix-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-cloud-hystrix-dashboard
+  template:
+    metadata:
+      labels:
+        app: spring-cloud-hystrix-dashboard
+        version: latest
+    spec:
+      hostname: dashboard
+      subdomain: dashboard
+      containers:
+      - name: spring-cloud-hystrix-dashboard
+        image: hubtea/spring-cloud-hystrix-dashboard:latest
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: dev
+        ports:
+        - name: http
+          containerPort: 9999
