@@ -46,7 +46,7 @@ spec:
       subdomain: dashboard
       containers:
       - name: spring-cloud-hystrix-dashboard
-        image: hubtea/spring-cloud-hystrix-dashboard:latest
+        image: ssipflow/spring-cloud-hystrix-dashboard:latest
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: dev
